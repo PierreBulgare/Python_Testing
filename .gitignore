@@ -6,3 +6,5 @@ tests/
 .envrc
 __pycache__
 virtualenv
+pytest_cache
+.vscode
