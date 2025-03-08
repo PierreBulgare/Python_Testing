@@ -58,8 +58,12 @@ def purchasePlaces():
     if not competition.get('clubs'):
         competition['clubs'] = {}
 
+    # Check if the number of places requested is less than or equal to 0
+    if places_required <= 0:
+        flash('Sorry, you must purchase at least 1 place')
+
     # Check if the competition is already fully booked
-    if competition_places <= 0:
+    elif competition_places <= 0:
         flash('Sorry, this competition is already fully booked')
 
     # Check if the number of places requested is more than the limit
