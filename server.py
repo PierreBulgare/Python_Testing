@@ -66,6 +66,10 @@ def purchasePlaces():
     elif competition_places <= 0:
         flash('Sorry, this competition is already fully booked')
 
+    # Check if the number of places requested is more than the number of places left in the competition
+    elif places_required > competition_places:
+        flash('Sorry, there are not enough places left in this competition based on your request')
+
     # Check if the number of places requested is more than the limit
     elif places_required > PLACE_LIMIT:
         flash('Sorry, you can only purchase up to 12 places')
@@ -73,10 +77,6 @@ def purchasePlaces():
     # Check if the number of places requested is more than the number of points
     elif places_required > club_points:
         flash('Sorry, you do not have enough points to purchase this many places')
-
-    # Check if the number of places requested is more than the number of places left in the competition
-    elif places_required > competition_places:
-        flash('Sorry, there are not enough places left in this competition based on your request')
 
     # If all the checks pass, update the number of points and places left
     else:
