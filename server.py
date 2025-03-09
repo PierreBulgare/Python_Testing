@@ -118,6 +118,10 @@ def purchasePlaces():
     club = [c for c in clubs if c['name'] == request.form['club']][0]
     # Get the club details using the email address of the current user
     if club['email'] == current_user.id:
+        # Check if the number of places requested is empty
+        if not request.form['places']:
+            flash('Sorry, you must enter a valid number of places')
+            return redirect(url_for('showSummaryGet'))
         places_required = int(request.form['places'])
         competition_places = int(competition['numberOfPlaces'])
         club_points = int(club['points'])
