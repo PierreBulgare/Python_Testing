@@ -1,0 +1,24 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GUDLFT Registration</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
+</head>
+<body>
+    <h1>Club Points</h1>
+    <a href="javascript:history.back()">Go Back</a>
+    <table>
+        <tr>
+            <th>Club Name</th>
+            <th>Points</th>
+        </tr>
+        {% for club in clubs %}
+        <tr>
+            <td>{{club.name}}</td>
+            <td>{{club.points}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
