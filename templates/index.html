@@ -17,7 +17,7 @@
     Please enter your secretary email to continue:
     <form action="showSummary" method="post">
         <label for="email">Email:</label>
-        <input type="email" name="email" id=""/>
+        <input type="email" name="email" id="" required=required/>
         <input type="hidden" name="next_page" value="{{ request.args.get('next', '') }}">
         <button type="submit">Enter</button>
     </form>
