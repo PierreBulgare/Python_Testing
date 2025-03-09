@@ -1,5 +1,6 @@
 import json
 from flask import Flask,render_template,request,redirect,flash,url_for
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 
 def loadClubs():
@@ -16,26 +17,79 @@ def loadCompetitions():
 
 app = Flask(__name__)
 app.secret_key = 'something_special'
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'index'
 
 competitions = loadCompetitions()
 clubs = loadClubs()
 
+
+class User(UserMixin):
+    def __init__(self, email):
+        self.id = email
+
+
+@login_manager.user_loader
+def load_user(email):
+    if any(club['email'] == email for club in clubs):
+        return User(email)
+    return None
+
+
 @app.route('/')
 def index():
+    # If the user is already logged in, redirect to the showSummary page
+    if current_user.is_authenticated:
+        return redirect(url_for('showSummaryGet'))
+
     return render_template('index.html')
+
 
 @app.route('/showSummary',methods=['POST'])
 def showSummary():
     try:
-        club = [club for club in clubs if club['email'] == request.form['email']][0]
+        email = request.form.get('email')
+        club = [club for club in clubs if club['email'] == email][0]
+        # If the email address is found in the clubs.json file, the user is logged in
+        if club:
+            login_user(User(email))
+        next_url = request.form.get('next_page').removeprefix('/').split("/") if request.form.get('next_page') else None
+        # If the next_page is not None, redirect to the next page
+        if next_url:
+            next_page = next_url[0]
+            # If the next_page is 'book', redirect to the booking page
+            if next_page == 'book':
+                competition = next_url[1].replace('%20',' ')
+                return redirect(url_for(next_page, competition=competition, club=club['name']))
+            else:
+                return redirect(url_for(next_page))
         return render_template('welcome.html',club=club,competitions=competitions)
     # If the email address is not found in the clubs.json file, the IndexError exception is raised
     except IndexError:
         flash('Sorry, this email address is not recognised')
         return redirect(url_for('index'))
+    
+
+@app.route('/showSummary',methods=['GET'])
+@login_required
+def showSummaryGet():
+    # Get the club details using the email address of the current user
+    email = current_user.id
+    club = next((club for club in clubs if club['email'] == email), None)
+
+    # If the club is not found, redirect to the index page
+    if club is None:
+        flash("Club not found")
+        return redirect(url_for('index'))
+    
+    return render_template('welcome.html', club=club, competitions=competitions)
+
 
 @app.route('/book/<competition>/<club>')
+@login_required
 def book(competition,club):
+    print(club,competition)
     foundClub = [c for c in clubs if c['name'] == club][0]
     foundCompetition = [c for c in competitions if c['name'] == competition][0]
     if foundClub and foundCompetition:
@@ -46,6 +100,7 @@ def book(competition,club):
 
 
 @app.route('/purchasePlaces',methods=['POST'])
+@login_required
 def purchasePlaces():
     PLACE_LIMIT = 12
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
@@ -101,12 +156,15 @@ def purchasePlaces():
 
 # TODO: Add route for points display
 @app.route('/points')
+@login_required
 def points():
     return render_template('clubs_points.html',clubs=clubs)
 
 
 @app.route('/logout')
+@login_required
 def logout():
+    logout_user()
     return redirect(url_for('index'))
 
 @app.errorhandler(404)
