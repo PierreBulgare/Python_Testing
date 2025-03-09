@@ -26,14 +26,18 @@ clubs = loadClubs()
 
 
 class User(UserMixin):
-    def __init__(self, email):
+    def __init__(self, name, email, points):
         self.id = email
+        self.email = email
+        self.name = name
+        self.points = points
 
 
 @login_manager.user_loader
 def load_user(email):
-    if any(club['email'] == email for club in clubs):
-        return User(email)
+    club = next((club for club in clubs if club['email'] == email), None)
+    if club:
+        return User(club['name'], email, club['points'])
     return None
 
 
@@ -53,7 +57,7 @@ def showSummary():
         club = [club for club in clubs if club['email'] == email][0]
         # If the email address is found in the clubs.json file, the user is logged in
         if club:
-            login_user(User(email))
+            login_user(load_user(email))
         next_url = request.form.get('next_page').removeprefix('/').split("/") if request.form.get('next_page') else None
         # If the next_page is not None, redirect to the next page
         if next_url:
@@ -75,8 +79,7 @@ def showSummary():
 @login_required
 def showSummaryGet():
     # Get the club details using the email address of the current user
-    email = current_user.id
-    club = next((club for club in clubs if club['email'] == email), None)
+    club = next((club for club in clubs if club['email'] == current_user.email), None)
 
     # If the club is not found, redirect to the index page
     if club is None:
