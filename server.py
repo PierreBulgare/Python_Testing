@@ -166,7 +166,7 @@ def purchasePlaces():
                 club['points'] = club_points - places_required
                 # Update the number of places booked by the club for the competition
                 competition['clubs'][club['name']]['places'] += places_required
-                flash('Great-booking complete!')
+                flash(f'Great-booking complete! You have purchased {places_required} places for {competition["name"]}')
                 
         return render_template('welcome.html', club=club, competitions=competitions)
     else:
