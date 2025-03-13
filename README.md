@@ -44,8 +44,14 @@
 
 5. Testing
 
-    You are free to use whatever testing framework you like-the main thing is that you can show what tests you are using.
+    We use pytest for testing: 
+    - `pytest` to run all tests
+    - `pytest -v` to run all test in verbose mode.
+    - `pytest -v test_file_name` (Example : `pytest -v tests/unit/test_purchase_places.py`)
 
-    We also like to show how well we're testing, so there's a module called 
-    [coverage](https://coverage.readthedocs.io/en/coverage-5.1/) you should add to your project.
+    We also like to show how well we're testing, so we use
+    `coverage`.
 
+6. Naming Convention
+
+    We use *snake_case* for **Python** code and *camelCase* for **JSON**.
