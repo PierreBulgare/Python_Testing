@@ -25,6 +25,7 @@ pluggy==1.5.0
 psutil==7.0.0
 pycparser==2.22
 pytest==8.3.5
+pytest-mock==3.14.0
 pywin32==308
 pyzmq==26.2.1
 requests==2.32.3
