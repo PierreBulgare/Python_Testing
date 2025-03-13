@@ -7,3 +7,4 @@ __pycache__
 virtualenv/
 .vscode/
 .pytest_cache/
+htmlcov/
