@@ -25,10 +25,10 @@ def logged_in_client(client, mocker):
 
 
 def test_empty_email(client):
-    response = client.post('/showSummary', data={'email': ''})
+    response = client.post('/show_summary', data={'email': ''})
     assert response.status_code == 302
 
 
 def test_empty_places(logged_in_client):
-    response = logged_in_client.post('/purchasePlaces', data={'competition': 'Spring Festival', 'club': 'Simply Lift', 'places': ''})
+    response = logged_in_client.post('/purchase_places', data={'competition': 'Spring Festival', 'club': 'Simply Lift', 'places': ''})
     assert response.status_code == 302

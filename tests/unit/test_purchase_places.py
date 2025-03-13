@@ -65,19 +65,19 @@ def test_logged_in_session(logged_in_client):
 
 def test_places_required_exceeds_limit(logged_in_client):
     """Test that the number of places requested exceeds the limit of 12"""
-    response = logged_in_client.post('/purchasePlaces', data={'competition': 'Spring Festival', 'club': 'Simply Lift', 'places': '13'})
+    response = logged_in_client.post('/purchase_places', data={'competition': 'Spring Festival', 'club': 'Simply Lift', 'places': '13'})
     assert b"Sorry, you can only purchase up to 12 places" in response.data
 
 
 def test_places_required_less_than_one(logged_in_client):
     """Test that the number of places requested is less than or equal to 0"""
-    response = logged_in_client.post('/purchasePlaces', data={'competition': 'Spring Festival', 'club': 'Simply Lift', 'places': '0'})
+    response = logged_in_client.post('/purchase_places', data={'competition': 'Spring Festival', 'club': 'Simply Lift', 'places': '0'})
     assert b"Sorry, you must purchase at least 1 place" in response.data
 
 
 def test_not_enough_competition_places(logged_in_client):
     """Test that there are not enough places left in the competition based on the request"""
-    response = logged_in_client.post('/purchasePlaces', data={'competition': 'Spring Festival', 'club': 'Simply Lift', 'places': '100'})
+    response = logged_in_client.post('/purchase_places', data={'competition': 'Spring Festival', 'club': 'Simply Lift', 'places': '100'})
     assert b"Sorry, there are not enough places left in this competition based on your request" in response.data
 
 
@@ -85,7 +85,7 @@ def test_not_enough_club_points(logged_in_client, mocker):
     """Test that the club does not have enough points to purchase the required places"""
     mocker.patch('server.clubs', mock_clubs(points=10))
     
-    response = logged_in_client.post('/purchasePlaces', data={'competition': 'Spring Festival', 'club': 'Simply Lift', 'places': '12'})
+    response = logged_in_client.post('/purchase_places', data={'competition': 'Spring Festival', 'club': 'Simply Lift', 'places': '12'})
     assert b"Sorry, you do not have enough points to purchase this many places" in response.data
 
 
@@ -94,7 +94,7 @@ def test_competition_fully_booked(logged_in_client, mocker):
     mocker.patch('server.clubs', mock_clubs())
     mocker.patch('server.competitions', mock_competitions(status='fully_booked'))
 
-    response = logged_in_client.post('/purchasePlaces', data={'competition': 'Spring Festival', 'club': 'Simply Lift', 'places': '1'})
+    response = logged_in_client.post('/purchase_places', data={'competition': 'Spring Festival', 'club': 'Simply Lift', 'places': '1'})
     assert b"Sorry, this competition is already fully booked" in response.data
 
 
@@ -103,11 +103,11 @@ def test_club_reaches_limit(logged_in_client, mocker):
     mocker.patch('server.clubs', mock_clubs())
     mocker.patch('server.competitions', mock_competitions(status='club_places_full'))
 
-    response = logged_in_client.post('/purchasePlaces', data={'competition': 'Spring Festival', 'club': 'Simply Lift', 'places': '1'})
+    response = logged_in_client.post('/purchase_places', data={'competition': 'Spring Festival', 'club': 'Simply Lift', 'places': '1'})
     assert b"Sorry, only 12 places are allowed per club" in response.data
 
 
 def test_booking_complete(logged_in_client):
     """Test that the booking is complete"""
-    response = logged_in_client.post('/purchasePlaces', data={'competition': 'Spring Festival', 'club': 'Simply Lift', 'places': '1'})
+    response = logged_in_client.post('/purchase_places', data={'competition': 'Spring Festival', 'club': 'Simply Lift', 'places': '1'})
     assert b"Great-booking complete!" in response.data

@@ -9,7 +9,7 @@ def client():
 
 
 def test_login_required_for_show_summary_get(client):
-    response = client.get('/showSummary')
+    response = client.get('/show_summary')
     assert response.status_code == 302
 
 
@@ -19,7 +19,7 @@ def test_login_required_for_book(client):
 
 
 def test_login_required_for_purchase_places(client):
-    response = client.post('/purchasePlaces')
+    response = client.post('/purchase_places')
     assert response.status_code == 302
 
 

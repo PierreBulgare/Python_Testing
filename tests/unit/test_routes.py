@@ -10,7 +10,7 @@ def client():
 
 def login(client, email):
     """Fonction utilitaire pour simuler une connexion."""
-    return client.post('/showSummary', data={'email': email})
+    return client.post('/show_summary', data={'email': email})
 
 
 def test_index(client):
@@ -21,7 +21,7 @@ def test_index(client):
 
 def test_showSummary(client):
     """Test que la connexion fonctionne avec un email valide."""
-    response = client.post('/showSummary', data={'email': 'john@simplylift.co'})
+    response = client.post('/show_summary', data={'email': 'john@simplylift.co'})
     assert response.status_code == 200
 
 
